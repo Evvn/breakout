@@ -1,0 +1,78 @@
+* {
+  box-sizing: border-box;
+}
+
+/* font-family: 'Archivo Black', sans-serif;
+font-family: 'Open Sans', sans-serif; */
+
+body {
+  background-color: #bef6e9;
+  font-family: 'Archivo Black', sans-serif;
+  color: #231f20;
+}
+
+.my-canvas {
+  background: #eee;
+  display: block;
+  margin: 0 auto;
+}
+
+.grid-container {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas: "banner header header header" "banner . gameBoard ." "banner footer footer footer";
+}
+
+.banner {
+  grid-area: banner;
+}
+
+.banner h1{
+  transform: rotate(180deg);
+  writing-mode: vertical-rl;
+  font-size: 7em;
+  letter-spacing: .1em;
+  margin: auto 0;
+  height: 100vh;
+  text-align: center;
+  width: auto;
+  background-color: #1538cf;
+  color: white;
+  float: left;
+  text-shadow: -5px 0 #231f20, 0 5px #231f20, 5px 0 #231f20, 0 -5px #231f20;
+  -webkit-text-stroke: 1px #231f20;
+}
+
+.red {
+  color: #ef303b;
+}
+
+.outline {
+  -webkit-text-stroke: 2px #231f20;
+}
+
+h2 {
+  font-size: 200%;
+}
+
+.blue {
+  color: #1538cf;
+}
+
+.gameBoard {
+  grid-area: gameBoard;
+  background-color: #231f20;
+}
+
+.header {
+  grid-area: header;
+  text-align: right;
+  font-size: 200%;
+}
+
+.footer {
+  grid-area: footer;
+  text-align: center;
+}
