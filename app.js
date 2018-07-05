@@ -37,6 +37,17 @@ var score = 0
 document.addEventListener('keydown', keyDownHandler, false)
 document.addEventListener('keyup', keyUpHandler, false)
 
+// tracks mouse movement for controls
+
+// document.addEventListener('mousemove', mouseMoveHandler, false)
+//
+// function mouseMoveHandler(event) {
+//   var relativeX = event.clientX - canvas.offsetLeft;
+//   if (relativeX > 0 && relativeX < canvas.width) {
+//     paddleX = relativeX - paddleWidth/2
+//   }
+// }
+
 function keyDownHandler(event) {
   if (event.keyCode == 39) {
     rightPressed = true
@@ -63,6 +74,10 @@ function collisionDetection() {
           dy = -dy
           b.status = 0
           score++
+          if (score == brickRowCount * brickColumnCount) {
+            alert('You win!')
+            document.location.reload()
+          }
         }
       }
     }
@@ -70,7 +85,7 @@ function collisionDetection() {
 }
 
 function drawScore() {
-  ctx.font = "16px 'Archivo Black'"
+  ctx.font = "1em Archivo Black"
   ctx.fillStyle = 'white'
   ctx.fillText('Score: ' + score, 8, 20)
 }
@@ -114,6 +129,7 @@ function draw() {
   drawBricks()
   drawBall()
   drawPaddle()
+  drawScore()
   collisionDetection()
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
