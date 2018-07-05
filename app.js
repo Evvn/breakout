@@ -5,8 +5,8 @@ var ctx = canvas.getContext('2d')
 
 var x = canvas.width/2
 var y = canvas.height-30
-var dx = 2
-var dy = -2
+var dx = 4
+var dy = -4
 var ballRadius = 10
 
 var paddleHeight = 10
@@ -33,6 +33,7 @@ for (var c = 0; c < brickColumnCount; c++) {
 }
 
 var score = 0
+var lives = 3
 
 document.addEventListener('keydown', keyDownHandler, false)
 document.addEventListener('keyup', keyUpHandler, false)
@@ -85,9 +86,15 @@ function collisionDetection() {
 }
 
 function drawScore() {
-  ctx.font = "1em Archivo Black"
+  ctx.font = '1em Archivo Black'
   ctx.fillStyle = 'white'
   ctx.fillText('Score: ' + score, 8, 20)
+}
+
+function drawLives() {
+  ctx.font = '1em Archivo Black'
+  ctx.fillStyle = 'white'
+  ctx.fillText('Lives: ' + lives, canvas.width - 65, 20)
 }
 
 function drawBall() {
@@ -130,6 +137,7 @@ function draw() {
   drawBall()
   drawPaddle()
   drawScore()
+  drawLives()
   collisionDetection()
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -141,17 +149,28 @@ function draw() {
     if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy
     } else {
-      alert('Game over!')
-      document.location.reload()
+      lives--
+      if (!lives) {
+        alert('Game over!')
+        document.location.reload()
+        return
+      } else {
+        x = canvas.width/2
+        y = canvas.height - 30
+        dx = 4
+        dy = -4
+        paddleX = (canvas.width - paddleWidth) / 2
+      }
     }
   }
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
-    paddleX += 7
+    paddleX += 9
   } else if (leftPressed && paddleX > 0) {
-    paddleX -= 7
+    paddleX -= 9
   }
   x += dx
   y += dy
+  requestAnimationFrame(draw)
 }
 
-setInterval(draw, 10)
+draw()
