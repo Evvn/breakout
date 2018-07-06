@@ -3,20 +3,23 @@ console.log('Breakout!');
 var canvas = document.querySelector('#my-canvas')
 var ctx = canvas.getContext('2d')
 
-var x = canvas.width/2
-var y = canvas.height-30
-var dx = 4
-var dy = -4
-var ballRadius = 10
-
 var paddleHeight = 10
 var paddleWidth = 75
-var paddleX = (canvas.width-paddleWidth)/2
+var paddleX = (canvas.width - paddleWidth) / 2
+
+var ballRadius = 10
+
+var x = paddleX
+var y = canvas.height - (ballRadius * 2)
+var dx = 4
+var dy = -4
+
+var ballMoving = false
 
 var rightPressed = false
 var leftPressed = false
 
-var brickRowCount = 3
+var brickRowCount = 4
 var brickColumnCount = 5
 var brickWidth = 75
 var brickHeight = 20
@@ -34,6 +37,8 @@ for (var c = 0; c < brickColumnCount; c++) {
 
 var score = 0
 var lives = 3
+
+var result = document.querySelector('.gameBoard').firstElementChild
 
 document.addEventListener('keydown', keyDownHandler, false)
 document.addEventListener('keyup', keyUpHandler, false)
@@ -54,6 +59,8 @@ function keyDownHandler(event) {
     rightPressed = true
   } else if (event.keyCode == 37) {
     leftPressed = true
+  } else if (event.keyCode == 32) {
+    ballMoving = true
   }
 }
 
@@ -76,8 +83,16 @@ function collisionDetection() {
           b.status = 0
           score++
           if (score == brickRowCount * brickColumnCount) {
-            alert('You win!')
-            document.location.reload()
+            // set ball back on paddle
+            x = paddleX
+            y = canvas.height - (ballRadius * 2)
+            ballMoving = false
+            result.innerHTML = "Win<span class='red'>!</span>"
+            result.className = "result"
+            setTimeout(function(){
+              result.className = "result hide"
+              document.location.reload()
+            },2000)
           }
         }
       }
@@ -94,7 +109,7 @@ function drawScore() {
 function drawLives() {
   ctx.font = '1em Archivo Black'
   ctx.fillStyle = 'white'
-  ctx.fillText('Lives: ' + lives, canvas.width - 65, 20)
+  ctx.fillText('Lives: ' + lives, canvas.width - 75, 20)
 }
 
 function drawBall() {
@@ -107,7 +122,7 @@ function drawBall() {
 
 function drawPaddle() {
   ctx.beginPath()
-  ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight)
+  ctx.rect(paddleX, (canvas.height - paddleHeight), paddleWidth, paddleHeight)
   ctx.fillStyle = 'blue'
   ctx.fill()
   ctx.closePath()
@@ -140,36 +155,54 @@ function draw() {
   drawLives()
   collisionDetection()
 
+  // if ball hits wall, reverse direction
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx
   }
   if (y + dy < ballRadius) {
     dy = -dy
   } else if (y + dy > canvas.height - ballRadius) {
+    // if ball hits paddle reverse direction
     if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy
     } else {
+      // remove a life and stop the ball
+      ballMoving = false
       lives--
       if (!lives) {
-        alert('Game over!')
-        document.location.reload()
+        // if out of lives, game over
+        result.innerHTML = "Lose<span class='red'>!</span>"
+        result.className = "result"
+        setTimeout(function(){
+          result.className = "result hide"
+          document.location.reload()
+        },2000)
         return
       } else {
-        x = canvas.width/2
-        y = canvas.height - 30
+        // if not out of lives, set ball back on paddle
+        x = paddleX
+        y = canvas.height - (ballRadius * 2)
         dx = 4
         dy = -4
         paddleX = (canvas.width - paddleWidth) / 2
       }
     }
   }
+
+  // move paddle on left/right key press
   if (rightPressed && paddleX < canvas.width - paddleWidth) {
     paddleX += 9
   } else if (leftPressed && paddleX > 0) {
     paddleX -= 9
   }
-  x += dx
-  y += dy
+  // move ball
+  if (ballMoving) {
+    x += dx
+    y += dy
+  } else {
+    // ball stopped
+    x = paddleX + (paddleWidth / 2)
+  }
   requestAnimationFrame(draw)
 }
 
