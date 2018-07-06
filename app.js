@@ -11,8 +11,8 @@ var ballRadius = 10
 
 var x = paddleX
 var y = canvas.height - (ballRadius * 2)
-var dx = 4
-var dy = -4
+var dx = 5
+var dy = -5
 
 var ballMoving = false
 
@@ -31,7 +31,11 @@ var bricks = []
 for (var c = 0; c < brickColumnCount; c++) {
   bricks[c] = []
   for (var r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 }
+    bricks[c][r] = {
+      x: 0,
+      y: 0,
+      status: 1
+    }
   }
 }
 
@@ -39,20 +43,24 @@ var score = 0
 var lives = 3
 
 var result = document.querySelector('.gameBoard').firstElementChild
+var mouse = document.querySelector('.mouse')
 
 document.addEventListener('keydown', keyDownHandler, false)
 document.addEventListener('keyup', keyUpHandler, false)
 
 // tracks mouse movement for controls
+mouse.addEventListener('click', mouseControls)
 
-// document.addEventListener('mousemove', mouseMoveHandler, false)
-//
-// function mouseMoveHandler(event) {
-//   var relativeX = event.clientX - canvas.offsetLeft;
-//   if (relativeX > 0 && relativeX < canvas.width) {
-//     paddleX = relativeX - paddleWidth/2
-//   }
-// }
+function mouseControls() {
+  document.addEventListener('mousemove', mouseMoveHandler, false)
+}
+
+function mouseMoveHandler(event) {
+  var relativeX = event.clientX - canvas.offsetLeft;
+  if (relativeX > (paddleWidth / 2) && relativeX < canvas.width - (paddleWidth / 2)) {
+    paddleX = relativeX - paddleWidth / 2
+  }
+}
 
 function keyDownHandler(event) {
   if (event.keyCode == 39) {
@@ -89,10 +97,10 @@ function collisionDetection() {
             ballMoving = false
             result.innerHTML = "Win<span class='red'>!</span>"
             result.className = "result"
-            setTimeout(function(){
+            setTimeout(function() {
               result.className = "result hide"
               document.location.reload()
-            },2000)
+            }, 2000)
           }
         }
       }
@@ -114,7 +122,7 @@ function drawLives() {
 
 function drawBall() {
   ctx.beginPath()
-  ctx.arc(x, y, ballRadius, 0, Math.PI*2)
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2)
   ctx.fillStyle = 'white'
   ctx.fill()
   ctx.closePath()
@@ -173,17 +181,17 @@ function draw() {
         // if out of lives, game over
         result.innerHTML = "Lose<span class='red'>!</span>"
         result.className = "result"
-        setTimeout(function(){
+        setTimeout(function() {
           result.className = "result hide"
           document.location.reload()
-        },2000)
+        }, 2000)
         return
       } else {
         // if not out of lives, set ball back on paddle
         x = paddleX
         y = canvas.height - (ballRadius * 2)
-        dx = 4
-        dy = -4
+        dx = 5
+        dy = -5
         paddleX = (canvas.width - paddleWidth) / 2
       }
     }
